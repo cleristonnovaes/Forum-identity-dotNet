@@ -179,6 +179,7 @@ DocProject/Help/html
 
 # Click-Once directory
 publish/
+/Forum/Web.config
 
 # Publish Web Output
 *.[Pp]ublish.xml
@@ -187,7 +188,6 @@ publish/
 # but database connection strings (with potential passwords) will be unencrypted
 *.pubxml
 *.publishproj
-Web.config
 
 # Microsoft Azure Web App publish settings. Comment the next line if you want to
 # checkin your Azure Web App publish settings, but sensitive information contained
