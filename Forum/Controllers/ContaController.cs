@@ -50,17 +50,18 @@ namespace Forum.Controllers
                 novoUsuario.NomeCompleto = modelo.NomeCompleto;
                 novoUsuario.Email = modelo.Email;
 
-                var usuario = UserManager.FindByEmail(modelo.Email);
+                var usuario = await UserManager.FindByEmailAsync(modelo.Email);
                 var usuarioExiste = usuario != null;
 
                 if(usuarioExiste)
-                    return RedirectToAction("Index", "Home");
+                    return View("AguardandoConfirmacao");
 
                 var resultado =  await UserManager.CreateAsync(novoUsuario, modelo.Senha);
 
                 if (resultado.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    await EnviarEmailDeConfirmacaoAsync(novoUsuario);
+                    return View("AguardandoConfirmacao");
                 }
                 else
                 {
@@ -69,6 +70,27 @@ namespace Forum.Controllers
                
             }
             return View(modelo);
+        }
+
+        private async Task EnviarEmailDeConfirmacaoAsync(UsuarioAplicacao usuario)
+        {
+
+            var token = await UserManager.GenerateEmailConfirmationTokenAsync(usuario.Id);
+
+            var linkDeCallBack = Url.Action(
+                "ConfirmacaoEmail", "Conta", new { usuarioId = usuario.Id, token = token },
+                Request.Url.Scheme);
+
+            await UserManager.SendEmailAsync(
+                usuario.Id,
+                "Fórum - Confirmação de Email",
+                $"Bem vindo ao Fórum, clique aqui {linkDeCallBack} confirmar seu endereço de email!"
+                );
+        }
+
+        public ActionResult ConfirmacaoEmail(string usuarioId, string token)
+        {
+            throw new NotImplementedException();
         }
 
         private void AdicionaErros(IdentityResult resultado)
