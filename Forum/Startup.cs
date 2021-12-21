@@ -48,9 +48,13 @@ namespace Forum
 
 
                 userManager.EmailService = new EmailServico();
-                
 
-                
+                var dataProtectionProvider = opcoes.DataProtectionProvider;
+                var dataProtectionProviderCreate = dataProtectionProvider.Create("Forum");
+
+                userManager.UserTokenProvider = new DataProtectorTokenProvider<UsuarioAplicacao>(dataProtectionProviderCreate);
+
+
                 return userManager;
             }
                 );
